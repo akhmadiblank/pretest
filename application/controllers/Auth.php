@@ -7,18 +7,63 @@ class Auth extends CI_Controller
     {
         parent::__construct();
         $this->load->library('form_validation');
+        $this->load->model('Registration_model');
+        $this->load->library('session');
     }
     public function index()
     {
-        $data['title'] = "HALAMAN LOGIN";
-        $this->load->view('template/auth_header', $data);
-        $this->load->view('auth/login');
-        $this->load->view('template/auth_footer');
+        $this->form_validation->set_rules('email', 'Email', 'required');
+        $this->form_validation->set_rules('password_login', 'Password', 'required');
+        if ($this->form_validation->run() == false) {
+            $data['title'] = "HALAMAN LOGIN";
+            $this->load->view('template/auth_header', $data);
+            $this->load->view('auth/login');
+            $this->load->view('template/auth_footer');
+        } else {
+            //meenggunakan function private login supaya tidak terlalu panjang methodnya
+            $this->_login();
+        }
+    }
+
+    private function _login()
+    {
+        $email = $this->input->post('email');
+        $password = $this->input->post('password_login');
+        $data = $this->db->get_where('user', array('email' => $email))->row_array();
+        //jika data ada
+        if ($data) {
+            //jika data aktif
+            if ($data['is_active'] == 1) {
+                //cek kecocokan password
+                if (password_verify($password, $data['password'])) {
+                    $data_user = [
+                        'email' => $data['email'],
+                        'role_id' => $data['role_id']
+                    ];
+                    $this->session->set_userdata($data_user);
+                    redirect('user');
+                } else {
+                    $this->session->set_flashdata('flashmassage', '<div class="alert alert-danger" role="alert">
+                    Wrong password!
+                  </div>');
+                    redirect('auth');
+                }
+            } else {
+                $this->session->set_flashdata('flashmassage', '<div class="alert alert-danger" role="alert">
+            this email has been not actived!
+          </div>');
+                redirect('auth');
+            }
+        } else {
+            $this->session->set_flashdata('flashmassage', '<div class="alert alert-danger" role="alert">
+            email is not registed!
+          </div>');
+            redirect('auth');
+        }
     }
     public function registration()
     {
 
-        $this->load->library('session');
         $this->form_validation->set_rules('name', 'fullname', 'required|trim');
         $this->form_validation->set_rules('email', 'email', 'required|trim|valid_email|is_unique[user.email]', [
             'is_unique' => 'this email has already registered'
@@ -39,20 +84,20 @@ class Auth extends CI_Controller
             $this->load->view('auth/registration');
             $this->load->view('template/auth_footer');
         } else {
-            $data = [
-                'nama' => htmlspecialchars($this->input->post('name', true)),
-                'email' => htmlspecialchars($this->input->post('email', true)),
-                'image' => 'default.jpg',
-                'password' => password_hash($this->input->post('password1'), PASSWORD_DEFAULT),
-                'role_id' => 2,
-                'is_active' => 1,
-                'date_create' => time()
-            ];
-            $this->db->insert('user', $data);
+            $this->Registration_model->registration();
             $this->session->set_flashdata('flashmassage', '<div class="alert alert-primary" role="alert">
             congratulation,your account has been created.please login!
           </div>');
             redirect('auth');
         }
+    }
+    public function logout()
+    {
+        $unset_array = ['email', 'role_id'];
+        $this->session->unset_userdata($unset_array);
+        $this->session->set_flashdata('flashmassage', '<div class="alert alert-primary" role="alert">
+            you have been logged out!
+          </div>');
+        redirect('auth');
     }
 }

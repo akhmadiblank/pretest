@@ -21,20 +21,23 @@
                                     <?= $this->session->flashdata('flashmassage'); ?>
                                     <?php $this->session->sess_destroy(); ?>
                                 <?php endif; ?>
-                                <form class="user">
+                                <form class="user" method="post" action="">
                                     <div class="form-group">
-                                        <input type="text" class="form-control form-control-user" id="email" name="email" aria-describedby="emailHelp" placeholder="Enter Email Address...">
+                                        <input type="text" class="form-control form-control-user" id="email" placeholder="Enter Email Address..." name="email" value="<?= set_value('email'); ?>">
+                                        <?= form_error('email', '<small class="text-danger pl-3">', '</small>'); ?>
                                     </div>
                                     <div class="form-group">
-                                        <input type="password" class="form-control form-control-user" id="password" name="password" placeholder="Password">
+                                        <input type="password" class="form-control form-control-user" id="password" name="password_login" placeholder="Password">
+                                        <?= form_error('password_login', ' <small class="text-danger pl-3">', '</small>'); ?>
                                     </div>
-                                    <div class="form-group">
+                                    <!-- <div class="form-group">
                                         <div class="custom-control custom-checkbox small">
                                             <input type="checkbox" class="custom-control-input" id="customCheck">
                                             <label class="custom-control-label" for="customCheck">Remember
                                                 Me</label>
                                         </div>
-                                    </div>
+                                    </div> -->
+
                                     <button type="submit" class="btn btn-primary btn-user btn-block">
                                         Login
                                     </button>
