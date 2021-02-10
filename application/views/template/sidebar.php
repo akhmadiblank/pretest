@@ -9,44 +9,51 @@
         <div class="sidebar-brand-text mx-3">Halaman Admin</div>
     </a>
 
+    <!-- sql -->
+    <?php
+    $role_id = $this->session->userdata('role_id');
+    $sqlmenu = "SELECT user_menu.id,menu FROM user_menu JOIN user_access_menu ON user_menu.id = user_access_menu.menu_id WHERE user_access_menu.role_id=$role_id ORDER BY user_access_menu.menu_id ASC ";
+    $menu = $this->db->query($sqlmenu)->result_array();
+
+    ?>
     <!-- Divider -->
     <hr class="sidebar-divider">
     <!-- Heading -->
+    <?php foreach ($menu as $m) : ?>
+        <div class="sidebar-heading">
+            <?= $m['menu']; ?>
+        </div>
+        <?php
+        $menuid = $m['id'];
+        $querysubmenu = "SELECT * From user_sub_menu where menu_id=$menuid AND is_active=1";
+        $submenu = $this->db->query($querysubmenu)->result_array();
+        ?>
+        <?php foreach ($submenu as $sm) : ?>
+            <!-- Nav Item - Dashboard -->
+            <li class="nav-item">
+                <a class="nav-link" href="<?= base_url($sm['url']); ?>">
+                    <i class="<?= $sm['icon']; ?>"></i>
+                    <span><?= $sm['title']; ?></span></a>
+            </li>
 
-    <div class="sidebar-heading">
-        USER
-    </div>
-
-    <!-- Nav Item - Dashboard -->
-    <li class="nav-item">
-        <a class="nav-link" href="index.html">
-            <i class="fas fa-fw fa-tachometer-alt"></i>
-            <span>Dashboard</span></a>
-    </li>
-
-    <!-- Divider -->
-    <hr class="sidebar-divider">
+            <!-- Divider -->
+            <hr class="sidebar-divider d-none d-md-block">
+        <?php endforeach; ?>
+        <!-- Divider -->
+        <!-- <hr class="sidebar-divider"> -->
+    <?php endforeach; ?>
 
 
 
-
-
-    <!-- Nav Item - Edit -->
-    <li class="nav-item">
-        <a class="nav-link" href="charts.html">
-            <i class="far fa-address-card"></i>
-            <span>Edit Profil</span></a>
-    </li>
-
-    <!-- Nav Item - change password -->
+    <!-- Nav Item - change password
     <li class="nav-item">
         <a class="nav-link" href="tables.html">
             <i class="fas fa-key"></i>
             <span>Change Password</span></a>
-    </li>
+    </li> -->
 
     <!-- Divider -->
-    <hr class="sidebar-divider d-none d-md-block">
+    <!-- <hr class="sidebar-divider d-none d-md-block"> -->
     <!-- Nav Item - logout -->
     <li class="nav-item">
         <a class="nav-link" href="<?= base_url('auth/logout') ?>">
