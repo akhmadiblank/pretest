@@ -104,4 +104,8 @@ class Auth extends CI_Controller
           </div>');
         redirect('auth');
     }
+    public function forbidden()
+    {
+        $this->load->view('auth/forbidden');
+    }
 }
