@@ -19,3 +19,12 @@ function is_logged()
         }
     }
 }
+//fungsi ini di hunakan untuk melakukan check list pada role acces
+function checked_access($id_role, $id_menu)
+{
+    $ci = get_instance();
+    $acces = $ci->db->get_where('user_access_menu', ['menu_id' => $id_menu, 'role_id' => $id_role]);
+    if ($acces->num_rows() > 0) {
+        return "checked='checked'";
+    }
+}

@@ -50,6 +50,24 @@
 <script src="<?= base_url(); ?>/asset/js/sweetalert2.all.min.js"></script>
 <script src="<?= base_url(); ?>/asset/js/script.js"></script>
 <script src="//cdn.jsdelivr.net/npm/promise-polyfill@8/dist/polyfill.js"></script>
+<script>
+    $('.form-check-input').on('click', function() {
+        const roleid = $(this).data('role');
+        const menuid = $(this).data('menu');
+
+        $.ajax({
+            url: "<?= base_url(); ?>admin/changeaccess",
+            data: {
+                roleid: roleid,
+                menuid: menuid
+            },
+            type: 'post',
+            success: function() {
+                document.location.href = "<?= base_url('Admin/role_access/'); ?>" + roleid;
+            }
+        });
+    });
+</script>
 
 
 </body>

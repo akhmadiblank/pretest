@@ -36,8 +36,8 @@
                 <li class="nav-item">
                 <?php endif; ?>
 
-                <a class="nav-link" href="<?= base_url($sm['url']); ?>">
-                    <i class="<?= $sm['icon']; ?>"></i>
+                <a class="nav-link pb-0" href="<?= base_url($sm['url']); ?>">
+                    <i class="<?= $sm['icon']; ?> "></i>
                     <span><?= $sm['title']; ?></span></a>
                 </li>
 
@@ -45,7 +45,7 @@
                 <!-- <hr class="sidebar-divider d-none d-md-block"> -->
             <?php endforeach; ?>
             <!-- Divider -->
-            <hr class="sidebar-divider">
+            <hr class="sidebar-divider mt-3">
         <?php endforeach; ?>
 
 
