@@ -8,6 +8,8 @@ class Admin extends CI_Controller
         parent::__construct();
         is_logged();
         $this->load->library('session');
+        $this->load->library('form_validation');
+        $this->load->model('Admin_model');
     }
     public function index()
     {
@@ -59,5 +61,41 @@ class Admin extends CI_Controller
         }
         $this->session->set_tempdata('change', '<div class="alert alert-primary" role="alert">
         access have changed</div>', 5);
+    }
+    public function addRole()
+    {
+        $data['title'] = 'role';
+        $data['user'] = $this->db->get_where('user', ['email' => $this->session->userdata('email')])->row_array();
+        $data['role'] = $this->db->get('user_role')->result_array();
+        $data['menu'] = $this->db->get('user_menu')->result_array();
+        $this->form_validation->set_rules('role', 'Role', 'required');
+        if ($this->form_validation->run() == false) {
+            $this->load->view('template/header', $data);
+            $this->load->view('template/sidebar', $data);
+            $this->load->view('template/topbar', $data);
+            $this->load->view('Admin/role', $data);
+            $this->load->view('template/footer', $data);
+        } else {
+            $this->Admin_model->tambah_role();
+            $this->session->set_tempdata('flash', "role berhasil ditambahkan");
+            redirect('Admin/role');
+        }
+    }
+    public function getAccess_modal()
+    {
+
+        $data['id'] = $this->Admin_model->get_role();
+        $this->load->view('Admin/role_update', $data);
+    }
+    public function update_Role($id)
+    {
+        $this->Admin_model->update_Role($id);
+        $this->session->set_tempdata('flash', "role berhasil diUpdate");
+        redirect('Admin/role');
+    }
+    public function delate_role_access($id)
+    {
+        $this->Admin_model->delate_role_access($id);
+        redirect('Admin/role');
     }
 }
