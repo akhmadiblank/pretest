@@ -51,6 +51,11 @@
 <script src="<?= base_url(); ?>/asset/js/script.js"></script>
 <script src="//cdn.jsdelivr.net/npm/promise-polyfill@8/dist/polyfill.js"></script>
 <script>
+    $('.custom-file-input').on('change', function() {
+        let fileName = $(this).val().split('\\').pop();
+        $(this).next('.custom-file-label').addClass("selected").html(fileName);
+    });
+
     $('.form-check-input').on('click', function() {
         const roleid = $(this).data('role');
         const menuid = $(this).data('menu');
